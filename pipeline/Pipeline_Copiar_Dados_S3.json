@@ -4,7 +4,7 @@
 		"description": "Teste cópia de dados (modo binário) AWS S3.",
 		"activities": [
 			{
-				"name": "Copiar CSV",
+				"name": "Copiar CSV AWS",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -37,6 +37,73 @@
 				"inputs": [
 					{
 						"referenceName": "Copia_Binaria_Arquivo",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DS_AWS_TO_AZURE",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "Wait1",
+				"type": "Wait",
+				"dependsOn": [
+					{
+						"activity": "Copiar CSV AWS",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"waitTimeInSeconds": 1
+				}
+			},
+			{
+				"name": "Copy CSV GCP",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Wait1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "BinarySource",
+						"storeSettings": {
+							"type": "GoogleCloudStorageReadSettings",
+							"recursive": true
+						},
+						"formatSettings": {
+							"type": "BinaryReadSettings"
+						}
+					},
+					"sink": {
+						"type": "BinarySink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "DSGCPTOAZURE",
 						"type": "DatasetReference"
 					}
 				],

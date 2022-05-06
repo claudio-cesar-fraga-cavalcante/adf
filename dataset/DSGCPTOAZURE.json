@@ -1,0 +1,21 @@
+{
+	"name": "DSGCPTOAZURE",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "GoogleCloudStorage1 S3",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Demo/001-Copia Simples AWS to Azure"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "GoogleCloudStorageLocation",
+				"bucketName": "sales_2021",
+				"fileName": "Sales_Records.csv"
+			}
+		}
+	}
+}
