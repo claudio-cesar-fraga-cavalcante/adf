@@ -1,0 +1,24 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "Analytics-ADF"
+		},
+		"AmazonS3_secretAccessKey": {
+			"value": ""
+		},
+		"AzureBlobStorageAWSTOAZURE_connectionString": {
+			"value": ""
+		},
+		"AmazonS3_properties_typeProperties_accessKeyId": {
+			"value": "AKIAQGAW7RYO5WPBMHHO"
+		},
+		"containerUri": {
+			"value": ""
+		},
+		"containerSasToken": {
+			"value": ""
+		}
+	}
+}
