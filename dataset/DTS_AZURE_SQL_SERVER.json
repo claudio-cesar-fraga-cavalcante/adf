@@ -5,6 +5,9 @@
 			"referenceName": "LKS_Azure_SQL_SERVER",
 			"type": "LinkedServiceReference"
 		},
+		"folder": {
+			"name": "Demo/002-Copia-CSV-para-tabela-sql-server"
+		},
 		"annotations": [],
 		"type": "AzureSqlTable",
 		"schema": [],
