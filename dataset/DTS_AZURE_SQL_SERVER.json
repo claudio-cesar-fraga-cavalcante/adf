@@ -1,0 +1,16 @@
+{
+	"name": "DTS_AZURE_SQL_SERVER",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LKS_Azure_SQL_SERVER",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "sales"
+		}
+	}
+}
