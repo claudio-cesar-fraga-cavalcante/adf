@@ -11,8 +11,17 @@
 		"AzureBlobStorageAWSTOAZURE_connectionString": {
 			"value": ""
 		},
+		"LKS_Azure_SQL_SERVER_connectionString": {
+			"value": ""
+		},
+		"GoogleCloudStorage1 S3_secretAccessKey": {
+			"value": ""
+		},
 		"AmazonS3_properties_typeProperties_accessKeyId": {
 			"value": "AKIAQGAW7RYO5WPBMHHO"
+		},
+		"GoogleCloudStorage1 S3_properties_typeProperties_accessKeyId": {
+			"value": "GOOGOIETTMSUAIELDL6EWJU4"
 		},
 		"containerUri": {
 			"value": ""

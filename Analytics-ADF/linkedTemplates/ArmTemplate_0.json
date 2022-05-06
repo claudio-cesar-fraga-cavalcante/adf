@@ -15,9 +15,21 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorageAWSTOAZURE'"
 		},
+		"LKS_Azure_SQL_SERVER_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'LKS_Azure_SQL_SERVER'"
+		},
+		"GoogleCloudStorage1 S3_secretAccessKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'secretAccessKey' of 'GoogleCloudStorage1 S3'"
+		},
 		"AmazonS3_properties_typeProperties_accessKeyId": {
 			"type": "string",
 			"defaultValue": "AKIAQGAW7RYO5WPBMHHO"
+		},
+		"GoogleCloudStorage1 S3_properties_typeProperties_accessKeyId": {
+			"type": "string",
+			"defaultValue": "GOOGOIETTMSUAIELDL6EWJU4"
 		}
 	},
 	"variables": {
@@ -52,6 +64,37 @@
 				"type": "AzureBlobStorage",
 				"typeProperties": {
 					"connectionString": "[parameters('AzureBlobStorageAWSTOAZURE_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/LKS_Azure_SQL_SERVER')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"connectionString": "[parameters('LKS_Azure_SQL_SERVER_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/GoogleCloudStorage1 S3')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "GoogleCloudStorage",
+				"typeProperties": {
+					"serviceUrl": "https://storage.googleapis.com",
+					"accessKeyId": "[parameters('GoogleCloudStorage1 S3_properties_typeProperties_accessKeyId')]",
+					"secretAccessKey": {
+						"type": "SecureString",
+						"value": "[parameters('GoogleCloudStorage1 S3_secretAccessKey')]"
+					}
 				}
 			},
 			"dependsOn": []
@@ -110,6 +153,32 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/DSGCPTOAZURE')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "GoogleCloudStorage1 S3",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Demo/001-Copia Simples AWS to Azure"
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "GoogleCloudStorageLocation",
+						"bucketName": "sales_2021",
+						"fileName": "Sales_Records.csv"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/GoogleCloudStorage1 S3')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/Pipeline_Copiar_Dados_S3')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -117,7 +186,7 @@
 				"description": "Teste cópia de dados (modo binário) AWS S3.",
 				"activities": [
 					{
-						"name": "Copiar CSV",
+						"name": "Copiar CSV AWS",
 						"type": "Copy",
 						"dependsOn": [],
 						"policy": {
@@ -161,6 +230,75 @@
 								"parameters": {}
 							}
 						]
+					},
+					{
+						"name": "Wait1",
+						"type": "Wait",
+						"dependsOn": [
+							{
+								"activity": "Copiar CSV AWS",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"waitTimeInSeconds": 1
+						}
+					},
+					{
+						"name": "Copy CSV GCP",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "Wait1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "BinarySource",
+								"storeSettings": {
+									"type": "GoogleCloudStorageReadSettings",
+									"recursive": true
+								},
+								"formatSettings": {
+									"type": "BinaryReadSettings"
+								}
+							},
+							"sink": {
+								"type": "BinarySink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "DSGCPTOAZURE",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DS_AWS_TO_AZURE",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
 					}
 				],
 				"policy": {
@@ -175,7 +313,8 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/Copia_Binaria_Arquivo')]",
-				"[concat(variables('factoryId'), '/datasets/DS_AWS_TO_AZURE')]"
+				"[concat(variables('factoryId'), '/datasets/DS_AWS_TO_AZURE')]",
+				"[concat(variables('factoryId'), '/datasets/DSGCPTOAZURE')]"
 			]
 		},
 		{

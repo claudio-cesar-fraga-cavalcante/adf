@@ -15,9 +15,21 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorageAWSTOAZURE'"
 		},
+		"LKS_Azure_SQL_SERVER_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'LKS_Azure_SQL_SERVER'"
+		},
+		"GoogleCloudStorage1 S3_secretAccessKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'secretAccessKey' of 'GoogleCloudStorage1 S3'"
+		},
 		"AmazonS3_properties_typeProperties_accessKeyId": {
 			"type": "string",
 			"defaultValue": "AKIAQGAW7RYO5WPBMHHO"
+		},
+		"GoogleCloudStorage1 S3_properties_typeProperties_accessKeyId": {
+			"type": "string",
+			"defaultValue": "GOOGOIETTMSUAIELDL6EWJU4"
 		},
 		"containerUri": {
 			"type": "string",
@@ -52,8 +64,17 @@
 					"AzureBlobStorageAWSTOAZURE_connectionString": {
 						"value": "[parameters('AzureBlobStorageAWSTOAZURE_connectionString')]"
 					},
+					"LKS_Azure_SQL_SERVER_connectionString": {
+						"value": "[parameters('LKS_Azure_SQL_SERVER_connectionString')]"
+					},
+					"GoogleCloudStorage1 S3_secretAccessKey": {
+						"value": "[parameters('GoogleCloudStorage1 S3_secretAccessKey')]"
+					},
 					"AmazonS3_properties_typeProperties_accessKeyId": {
 						"value": "[parameters('AmazonS3_properties_typeProperties_accessKeyId')]"
+					},
+					"GoogleCloudStorage1 S3_properties_typeProperties_accessKeyId": {
+						"value": "[parameters('GoogleCloudStorage1 S3_properties_typeProperties_accessKeyId')]"
 					}
 				}
 			},
