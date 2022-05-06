@@ -1,0 +1,23 @@
+{
+	"name": "Copia_Binaria_Arquivo",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AmazonS3",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Demo/001-Copia Simples AWS to Azure"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AmazonS3Location",
+				"bucketName": "sales-amazon",
+				"folderPath": "dados",
+				"fileName": "sales.csv"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

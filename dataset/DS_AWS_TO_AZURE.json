@@ -1,0 +1,22 @@
+{
+	"name": "DS_AWS_TO_AZURE",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorageAWSTOAZURE",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Demo/001-Copia Simples AWS to Azure"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"folderPath": "in_aws",
+				"container": "awstoazure"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

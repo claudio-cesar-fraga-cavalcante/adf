@@ -1,0 +1,25 @@
+{
+	"name": "trigger_copia_dados_aws_para_azure",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "Pipeline_Copiar_Dados_S3",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2022-05-05T19:05:00",
+				"endTime": "2022-05-06T21:59:00",
+				"timeZone": "E. South America Standard Time"
+			}
+		}
+	}
+}
