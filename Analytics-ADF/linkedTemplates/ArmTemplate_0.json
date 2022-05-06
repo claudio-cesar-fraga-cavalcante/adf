@@ -187,6 +187,9 @@
 					"referenceName": "AmazonS3",
 					"type": "LinkedServiceReference"
 				},
+				"folder": {
+					"name": "Demo/002-Copia-CSV-para-tabela-sql-server"
+				},
 				"annotations": [],
 				"type": "DelimitedText",
 				"typeProperties": {
@@ -272,6 +275,9 @@
 				"linkedServiceName": {
 					"referenceName": "LKS_Azure_SQL_SERVER",
 					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Demo/002-Copia-CSV-para-tabela-sql-server"
 				},
 				"annotations": [],
 				"type": "AzureSqlTable",
