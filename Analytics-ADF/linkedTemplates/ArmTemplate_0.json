@@ -479,8 +479,7 @@
 											"physicalType": "String"
 										},
 										"sink": {
-											"name": "Region",
-											"type": "String",
+											"name": "Regiao",
 											"physicalType": "nvarchar"
 										}
 									},
@@ -491,8 +490,7 @@
 											"physicalType": "String"
 										},
 										"sink": {
-											"name": "Country",
-											"type": "String",
+											"name": "Pais",
 											"physicalType": "nvarchar"
 										}
 									},
@@ -503,8 +501,7 @@
 											"physicalType": "String"
 										},
 										"sink": {
-											"name": "Item Type",
-											"type": "String",
+											"name": "Tipo item",
 											"physicalType": "nvarchar"
 										}
 									},
@@ -515,8 +512,7 @@
 											"physicalType": "String"
 										},
 										"sink": {
-											"name": "Sales Channel",
-											"type": "String",
+											"name": "Canal vendas",
 											"physicalType": "nvarchar"
 										}
 									},
@@ -527,8 +523,7 @@
 											"physicalType": "String"
 										},
 										"sink": {
-											"name": "Order Priority",
-											"type": "String",
+											"name": "prioridade",
 											"physicalType": "nvarchar"
 										}
 									},
@@ -539,8 +534,7 @@
 											"physicalType": "String"
 										},
 										"sink": {
-											"name": "Order Date",
-											"type": "String",
+											"name": "data",
 											"physicalType": "nvarchar"
 										}
 									},
@@ -551,8 +545,7 @@
 											"physicalType": "String"
 										},
 										"sink": {
-											"name": "Order ID",
-											"type": "String",
+											"name": "ID",
 											"physicalType": "nvarchar"
 										}
 									},
@@ -563,8 +556,7 @@
 											"physicalType": "String"
 										},
 										"sink": {
-											"name": "Ship Date",
-											"type": "String",
+											"name": "Data envio",
 											"physicalType": "nvarchar"
 										}
 									},
@@ -575,8 +567,7 @@
 											"physicalType": "String"
 										},
 										"sink": {
-											"name": "Units Sold",
-											"type": "String",
+											"name": "Unidades Vendidas",
 											"physicalType": "nvarchar"
 										}
 									},
@@ -587,8 +578,7 @@
 											"physicalType": "String"
 										},
 										"sink": {
-											"name": "Unit Price",
-											"type": "String",
+											"name": "Preco Unidade",
 											"physicalType": "nvarchar"
 										}
 									},
@@ -599,8 +589,7 @@
 											"physicalType": "String"
 										},
 										"sink": {
-											"name": "Unit Cost",
-											"type": "String",
+											"name": "Custo Unidade",
 											"physicalType": "nvarchar"
 										}
 									},
@@ -611,8 +600,7 @@
 											"physicalType": "String"
 										},
 										"sink": {
-											"name": "Total Revenue",
-											"type": "String",
+											"name": "Total Revenda",
 											"physicalType": "nvarchar"
 										}
 									},
@@ -623,8 +611,7 @@
 											"physicalType": "String"
 										},
 										"sink": {
-											"name": "Total Cost",
-											"type": "String",
+											"name": "Custo Total",
 											"physicalType": "nvarchar"
 										}
 									},
@@ -635,8 +622,7 @@
 											"physicalType": "String"
 										},
 										"sink": {
-											"name": "Total Profit",
-											"type": "String",
+											"name": "Lucro Total",
 											"physicalType": "nvarchar"
 										}
 									}
