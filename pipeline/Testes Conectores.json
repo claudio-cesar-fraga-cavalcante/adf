@@ -15,7 +15,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"url": "https://httpbin.org/#/HTTP_Methods/post_post",
+					"url": "https://httpbin.org/post",
 					"method": "POST"
 				}
 			}
