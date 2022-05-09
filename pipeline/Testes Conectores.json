@@ -15,7 +15,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"url": "https://github.com/",
+					"url": "https://httpbin.org/#/HTTP_Methods/post_post",
 					"method": "POST"
 				}
 			}
