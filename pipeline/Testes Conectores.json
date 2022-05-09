@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"url": "https://github.com/",
-					"method": "GET"
+					"method": "POST"
 				}
 			}
 		],
