@@ -13,23 +13,234 @@
 	},
 	"resources": [
 		{
-			"name": "[concat(parameters('factoryName'), '/MySqlAWS')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
+			"name": "[concat(parameters('factoryName'), '/PIP_Obter_CSV_gerar_tabela')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
-				"linkedServiceName": {
-					"referenceName": "LS_MySqlAWS",
-					"type": "LinkedServiceReference"
+				"description": "Obtém um CSV e então gera uma tabela no SQL Server",
+				"activities": [
+					{
+						"name": "ACT_Obter_Dados_Gravar_BD",
+						"description": "Copia os dados e altera o nome das colunas",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AmazonS3ReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"writeBehavior": "insert",
+								"sqlWriterUseTableLock": false,
+								"tableOption": "autoCreate",
+								"disableMetricsCollection": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "Region",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Regiao",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "Country",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Pais",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "Item Type",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Tipo item",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "Sales Channel",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Canal vendas",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "Order Priority",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "prioridade",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "Order Date",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "data",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "Order ID",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "ID",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "Ship Date",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Data envio",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "Units Sold",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Unidades Vendidas",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "Unit Price",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Preco Unidade",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "Unit Cost",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Custo Unidade",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "Total Revenue",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Total Revenda",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "Total Cost",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Custo Total",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "Total Profit",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Lucro Total",
+											"physicalType": "nvarchar"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "DTS_AWS_SALES",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DTS_AZURE_SQL_SERVER",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
 				},
 				"folder": {
-					"name": "Demo/003-Mysql-AWS"
+					"name": "Demo/002-Obter CSV e Gerar Tabela"
 				},
-				"annotations": [],
-				"type": "MySqlTable",
-				"schema": [],
-				"typeProperties": {
-					"tableName": "`employees`"
-				}
+				"annotations": []
 			},
 			"dependsOn": []
 		},
@@ -87,7 +298,7 @@
 						]
 					},
 					{
-						"name": "Cria",
+						"name": "GeraTabelaCovid",
 						"type": "Copy",
 						"dependsOn": [
 							{
@@ -163,6 +374,303 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/Pipeline_Copiar_Dados_S3')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Teste cópia de dados (modo binário) AWS S3.",
+				"activities": [
+					{
+						"name": "Copiar CSV AWS",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 3,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "BinarySource",
+								"storeSettings": {
+									"type": "AmazonS3ReadSettings",
+									"recursive": true
+								},
+								"formatSettings": {
+									"type": "BinaryReadSettings"
+								}
+							},
+							"sink": {
+								"type": "BinarySink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "Copia_Binaria_Arquivo",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DS_AWS_TO_AZURE",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "Wait1",
+						"type": "Wait",
+						"dependsOn": [
+							{
+								"activity": "Copiar CSV AWS",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"waitTimeInSeconds": 1
+						}
+					},
+					{
+						"name": "Copy CSV GCP",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "Wait1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "BinarySource",
+								"storeSettings": {
+									"type": "GoogleCloudStorageReadSettings",
+									"recursive": true
+								},
+								"formatSettings": {
+									"type": "BinaryReadSettings"
+								}
+							},
+							"sink": {
+								"type": "BinarySink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "DSGCPTOAZURE",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DS_AWS_TO_AZURE",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"folder": {
+					"name": "Demo/001-Copia Simples AWS to Azure"
+				},
+				"annotations": [],
+				"lastPublishTime": "2022-05-05T22:42:11Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MySqlAWS')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_MySqlAWS",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Demo/003-Mysql-AWS"
+				},
+				"annotations": [],
+				"type": "MySqlTable",
+				"schema": [],
+				"typeProperties": {
+					"tableName": "`employees`"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/PLN - Copiar tabela Mysql AWS para CSV Data Lake Azure')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy data1",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "MySqlSource"
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"dataIntegrationUnits": 2,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "emp_no",
+											"type": "Int32"
+										},
+										"sink": {
+											"name": "emp_no",
+											"type": "Int32",
+											"physicalType": "Int32"
+										}
+									},
+									{
+										"source": {
+											"name": "birth_date",
+											"type": "DateTime"
+										},
+										"sink": {
+											"name": "birth_date",
+											"type": "DateTime",
+											"physicalType": "DateTime"
+										}
+									},
+									{
+										"source": {
+											"name": "first_name",
+											"type": "String"
+										},
+										"sink": {
+											"name": "first_name",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "last_name",
+											"type": "String"
+										},
+										"sink": {
+											"name": "last_name",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "gender",
+											"type": "String"
+										},
+										"sink": {
+											"name": "gender",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "hire_date",
+											"type": "DateTime"
+										},
+										"sink": {
+											"name": "hire_date",
+											"type": "DateTime",
+											"physicalType": "DateTime"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "MySqlAWS",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DTS_EMPLOYEES_MYSQL",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"folder": {
+					"name": "Demo/004-Copiar tabela Mysql AWS para CSV Data Lake Azure"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/MySqlAWS')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/trigger_copia_dados_aws_para_azure')]",
 			"type": "Microsoft.DataFactory/factories/triggers",
 			"apiVersion": "2018-06-01",
@@ -185,12 +693,13 @@
 						"interval": 1,
 						"startTime": "2022-05-05T19:05:00",
 						"endTime": "2022-05-06T21:59:00",
-						"timeZone": "E. South America Standard Time",
-						"schedule": {}
+						"timeZone": "E. South America Standard Time"
 					}
 				}
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/Pipeline_Copiar_Dados_S3')]"
+			]
 		}
 	]
 }

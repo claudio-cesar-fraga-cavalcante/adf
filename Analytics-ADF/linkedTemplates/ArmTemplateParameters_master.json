@@ -14,13 +14,13 @@
 		"GoogleCloudStorage1 S3_secretAccessKey": {
 			"value": ""
 		},
+		"LKS_AzureDataLakeStorage_accountKey": {
+			"value": ""
+		},
 		"LKS_Azure_SQL_SERVER_connectionString": {
 			"value": ""
 		},
 		"LS_MySqlAWS_connectionString": {
-			"value": ""
-		},
-		"LKS_AzureDataLakeStorage_accountKey": {
 			"value": ""
 		},
 		"AmazonS3_properties_typeProperties_accessKeyId": {
