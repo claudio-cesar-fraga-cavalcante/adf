@@ -2,7 +2,7 @@
 	"name": "trigger_copia_dados_aws_para_azure",
 	"properties": {
 		"annotations": [],
-		"runtimeState": "Started",
+		"runtimeState": "Stopped",
 		"pipelines": [
 			{
 				"pipelineReference": {
