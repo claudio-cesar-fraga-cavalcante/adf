@@ -15,13 +15,17 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorageAWSTOAZURE'"
 		},
+		"GoogleCloudStorage1 S3_secretAccessKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'secretAccessKey' of 'GoogleCloudStorage1 S3'"
+		},
 		"LKS_Azure_SQL_SERVER_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'LKS_Azure_SQL_SERVER'"
 		},
-		"GoogleCloudStorage1 S3_secretAccessKey": {
+		"LS_MySqlAWS_connectionString": {
 			"type": "secureString",
-			"metadata": "Secure string for 'secretAccessKey' of 'GoogleCloudStorage1 S3'"
+			"metadata": "Secure string for 'connectionString' of 'LS_MySqlAWS'"
 		},
 		"AmazonS3_properties_typeProperties_accessKeyId": {
 			"type": "string",
@@ -64,11 +68,14 @@
 					"AzureBlobStorageAWSTOAZURE_connectionString": {
 						"value": "[parameters('AzureBlobStorageAWSTOAZURE_connectionString')]"
 					},
+					"GoogleCloudStorage1 S3_secretAccessKey": {
+						"value": "[parameters('GoogleCloudStorage1 S3_secretAccessKey')]"
+					},
 					"LKS_Azure_SQL_SERVER_connectionString": {
 						"value": "[parameters('LKS_Azure_SQL_SERVER_connectionString')]"
 					},
-					"GoogleCloudStorage1 S3_secretAccessKey": {
-						"value": "[parameters('GoogleCloudStorage1 S3_secretAccessKey')]"
+					"LS_MySqlAWS_connectionString": {
+						"value": "[parameters('LS_MySqlAWS_connectionString')]"
 					},
 					"AmazonS3_properties_typeProperties_accessKeyId": {
 						"value": "[parameters('AmazonS3_properties_typeProperties_accessKeyId')]"

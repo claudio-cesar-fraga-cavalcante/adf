@@ -15,13 +15,17 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorageAWSTOAZURE'"
 		},
+		"GoogleCloudStorage1 S3_secretAccessKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'secretAccessKey' of 'GoogleCloudStorage1 S3'"
+		},
 		"LKS_Azure_SQL_SERVER_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'LKS_Azure_SQL_SERVER'"
 		},
-		"GoogleCloudStorage1 S3_secretAccessKey": {
+		"LS_MySqlAWS_connectionString": {
 			"type": "secureString",
-			"metadata": "Secure string for 'secretAccessKey' of 'GoogleCloudStorage1 S3'"
+			"metadata": "Secure string for 'connectionString' of 'LS_MySqlAWS'"
 		},
 		"AmazonS3_properties_typeProperties_accessKeyId": {
 			"type": "string",
@@ -36,6 +40,43 @@
 		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
 	},
 	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/Testes Conectores')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "HttpTeste",
+						"type": "WebActivity",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"url": "https://httpbin.org/post",
+							"method": "POST",
+							"headers": {},
+							"body": {}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"folder": {
+					"name": "Demo/Testes Conectores"
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
 		{
 			"name": "[concat(parameters('factoryName'), '/AmazonS3')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
@@ -69,19 +110,6 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/LKS_Azure_SQL_SERVER')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "AzureSqlDatabase",
-				"typeProperties": {
-					"connectionString": "[parameters('LKS_Azure_SQL_SERVER_connectionString')]"
-				}
-			},
-			"dependsOn": []
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/GoogleCloudStorage1 S3')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -96,6 +124,40 @@
 						"value": "[parameters('GoogleCloudStorage1 S3_secretAccessKey')]"
 					}
 				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/LKS_Azure_SQL_SERVER')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"connectionString": "[parameters('LKS_Azure_SQL_SERVER_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/integrationRuntime1AWS')]",
+			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "SelfHosted",
+				"description": "Runtime onpremisses",
+				"typeProperties": {}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/integrationRuntimeAWS')]",
+			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "SelfHosted",
+				"typeProperties": {}
 			},
 			"dependsOn": []
 		},
@@ -127,32 +189,6 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/DS_AWS_TO_AZURE')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureBlobStorageAWSTOAZURE",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Demo/001-Copia Simples AWS to Azure"
-				},
-				"annotations": [],
-				"type": "Binary",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"folderPath": "in_aws",
-						"container": "awstoazure"
-					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorageAWSTOAZURE')]"
-			]
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/DSGCPTOAZURE')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -176,6 +212,32 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/GoogleCloudStorage1 S3')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_AWS_TO_AZURE')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorageAWSTOAZURE",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Demo/001-Copia Simples AWS to Azure"
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"folderPath": "in_aws",
+						"container": "awstoazure"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorageAWSTOAZURE')]"
 			]
 		},
 		{
@@ -292,142 +354,22 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/Pipeline_Copiar_Dados_S3')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
+			"name": "[concat(parameters('factoryName'), '/LS_MySqlAWS')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
 			"properties": {
-				"description": "Teste cópia de dados (modo binário) AWS S3.",
-				"activities": [
-					{
-						"name": "Copiar CSV AWS",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 3,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "BinarySource",
-								"storeSettings": {
-									"type": "AmazonS3ReadSettings",
-									"recursive": true
-								},
-								"formatSettings": {
-									"type": "BinaryReadSettings"
-								}
-							},
-							"sink": {
-								"type": "BinarySink",
-								"storeSettings": {
-									"type": "AzureBlobStorageWriteSettings"
-								}
-							},
-							"enableStaging": false
-						},
-						"inputs": [
-							{
-								"referenceName": "Copia_Binaria_Arquivo",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "DS_AWS_TO_AZURE",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					},
-					{
-						"name": "Wait1",
-						"type": "Wait",
-						"dependsOn": [
-							{
-								"activity": "Copiar CSV AWS",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"waitTimeInSeconds": 1
-						}
-					},
-					{
-						"name": "Copy CSV GCP",
-						"type": "Copy",
-						"dependsOn": [
-							{
-								"activity": "Wait1",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "BinarySource",
-								"storeSettings": {
-									"type": "GoogleCloudStorageReadSettings",
-									"recursive": true
-								},
-								"formatSettings": {
-									"type": "BinaryReadSettings"
-								}
-							},
-							"sink": {
-								"type": "BinarySink",
-								"storeSettings": {
-									"type": "AzureBlobStorageWriteSettings"
-								}
-							},
-							"enableStaging": false
-						},
-						"inputs": [
-							{
-								"referenceName": "DSGCPTOAZURE",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "DS_AWS_TO_AZURE",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
-				},
-				"folder": {
-					"name": "Demo/001-Copia Simples AWS to Azure"
-				},
 				"annotations": [],
-				"lastPublishTime": "2022-05-05T22:42:11Z"
+				"type": "MySql",
+				"typeProperties": {
+					"connectionString": "[parameters('LS_MySqlAWS_connectionString')]"
+				},
+				"connectVia": {
+					"referenceName": "integrationRuntimeAWS",
+					"type": "IntegrationRuntimeReference"
+				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/Copia_Binaria_Arquivo')]",
-				"[concat(variables('factoryId'), '/datasets/DS_AWS_TO_AZURE')]",
-				"[concat(variables('factoryId'), '/datasets/DSGCPTOAZURE')]"
+				"[concat(variables('factoryId'), '/integrationRuntimes/integrationRuntimeAWS')]"
 			]
 		},
 		{
@@ -439,6 +381,7 @@
 				"activities": [
 					{
 						"name": "ACT_Obter_Dados_Gravar_BD",
+						"description": "Copia os dados e altera o nome das colunas",
 						"type": "Copy",
 						"dependsOn": [],
 						"policy": {
@@ -662,6 +605,168 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/DTS_AWS_SALES')]",
 				"[concat(variables('factoryId'), '/datasets/DTS_AZURE_SQL_SERVER')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Pipeline_Copiar_Dados_S3')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Teste cópia de dados (modo binário) AWS S3.",
+				"activities": [
+					{
+						"name": "Copiar CSV AWS",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 3,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "BinarySource",
+								"storeSettings": {
+									"type": "AmazonS3ReadSettings",
+									"recursive": true
+								},
+								"formatSettings": {
+									"type": "BinaryReadSettings"
+								}
+							},
+							"sink": {
+								"type": "BinarySink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "Copia_Binaria_Arquivo",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DS_AWS_TO_AZURE",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "Wait1",
+						"type": "Wait",
+						"dependsOn": [
+							{
+								"activity": "Copiar CSV AWS",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"waitTimeInSeconds": 1
+						}
+					},
+					{
+						"name": "Copy CSV GCP",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "Wait1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "BinarySource",
+								"storeSettings": {
+									"type": "GoogleCloudStorageReadSettings",
+									"recursive": true
+								},
+								"formatSettings": {
+									"type": "BinaryReadSettings"
+								}
+							},
+							"sink": {
+								"type": "BinarySink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "DSGCPTOAZURE",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DS_AWS_TO_AZURE",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"folder": {
+					"name": "Demo/001-Copia Simples AWS to Azure"
+				},
+				"annotations": [],
+				"lastPublishTime": "2022-05-05T22:42:11Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/Copia_Binaria_Arquivo')]",
+				"[concat(variables('factoryId'), '/datasets/DS_AWS_TO_AZURE')]",
+				"[concat(variables('factoryId'), '/datasets/DSGCPTOAZURE')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MySqlAWS')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_MySqlAWS",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Demo/003-Mysql-AWS"
+				},
+				"annotations": [],
+				"type": "MySqlTable",
+				"schema": [],
+				"typeProperties": {
+					"tableName": "`employees`"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_MySqlAWS')]"
 			]
 		},
 		{
