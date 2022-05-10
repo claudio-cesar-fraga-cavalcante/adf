@@ -1,0 +1,19 @@
+{
+	"name": "DTS_ORC_EMPLOYEES",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LKS_AzureDataLakeStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Orc",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileSystem": "input"
+			},
+			"enablePhysicalSchema": true
+		},
+		"schema": []
+	}
+}
