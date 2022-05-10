@@ -48,7 +48,7 @@
 				]
 			},
 			{
-				"name": "Copy data1",
+				"name": "GeraTabelaCovid",
 				"type": "Copy",
 				"dependsOn": [
 					{
