@@ -27,6 +27,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'LS_MySqlAWS'"
 		},
+		"LKS_AzureDataLakeStorage_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'LKS_AzureDataLakeStorage'"
+		},
 		"AmazonS3_properties_typeProperties_accessKeyId": {
 			"type": "string",
 			"defaultValue": "AKIAQGAW7RYO5WPBMHHO"
@@ -34,6 +38,14 @@
 		"GoogleCloudStorage1 S3_properties_typeProperties_accessKeyId": {
 			"type": "string",
 			"defaultValue": "GOOGOIETTMSUAIELDL6EWJU4"
+		},
+		"HttpServerBrasilIO_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://data.brasil.io/"
+		},
+		"LKS_AzureDataLakeStorage_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://storagelakegen2.dfs.core.windows.net"
 		},
 		"containerUri": {
 			"type": "string",
@@ -74,6 +86,9 @@
 					"LKS_Azure_SQL_SERVER_connectionString": {
 						"value": "[parameters('LKS_Azure_SQL_SERVER_connectionString')]"
 					},
+					"LKS_AzureDataLakeStorage_accountKey": {
+						"value": "[parameters('LKS_AzureDataLakeStorage_accountKey')]"
+					},
 					"LS_MySqlAWS_connectionString": {
 						"value": "[parameters('LS_MySqlAWS_connectionString')]"
 					},
@@ -82,10 +97,36 @@
 					},
 					"GoogleCloudStorage1 S3_properties_typeProperties_accessKeyId": {
 						"value": "[parameters('GoogleCloudStorage1 S3_properties_typeProperties_accessKeyId')]"
+					},
+					"HttpServerBrasilIO_properties_typeProperties_url": {
+						"value": "[parameters('HttpServerBrasilIO_properties_typeProperties_url')]"
+					},
+					"LKS_AzureDataLakeStorage_properties_typeProperties_url": {
+						"value": "[parameters('LKS_AzureDataLakeStorage_properties_typeProperties_url')]"
 					}
 				}
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "Analytics-ADF_ArmTemplate_1",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_1.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'Analytics-ADF_ArmTemplate_0')]"
+			]
 		}
 	]
 }

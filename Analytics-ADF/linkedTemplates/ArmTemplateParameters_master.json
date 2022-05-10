@@ -20,11 +20,20 @@
 		"LS_MySqlAWS_connectionString": {
 			"value": ""
 		},
+		"LKS_AzureDataLakeStorage_accountKey": {
+			"value": ""
+		},
 		"AmazonS3_properties_typeProperties_accessKeyId": {
 			"value": "AKIAQGAW7RYO5WPBMHHO"
 		},
 		"GoogleCloudStorage1 S3_properties_typeProperties_accessKeyId": {
 			"value": "GOOGOIETTMSUAIELDL6EWJU4"
+		},
+		"HttpServerBrasilIO_properties_typeProperties_url": {
+			"value": "https://data.brasil.io/"
+		},
+		"LKS_AzureDataLakeStorage_properties_typeProperties_url": {
+			"value": "https://storagelakegen2.dfs.core.windows.net"
 		},
 		"containerUri": {
 			"value": ""

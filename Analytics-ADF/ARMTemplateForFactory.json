@@ -27,6 +27,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'LS_MySqlAWS'"
 		},
+		"LKS_AzureDataLakeStorage_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'LKS_AzureDataLakeStorage'"
+		},
 		"AmazonS3_properties_typeProperties_accessKeyId": {
 			"type": "string",
 			"defaultValue": "AKIAQGAW7RYO5WPBMHHO"
@@ -34,6 +38,14 @@
 		"GoogleCloudStorage1 S3_properties_typeProperties_accessKeyId": {
 			"type": "string",
 			"defaultValue": "GOOGOIETTMSUAIELDL6EWJU4"
+		},
+		"HttpServerBrasilIO_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://data.brasil.io/"
+		},
+		"LKS_AzureDataLakeStorage_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://storagelakegen2.dfs.core.windows.net"
 		}
 	},
 	"variables": {
@@ -644,6 +656,29 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/MySqlAWS')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_MySqlAWS",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Demo/003-Mysql-AWS"
+				},
+				"annotations": [],
+				"type": "MySqlTable",
+				"schema": [],
+				"typeProperties": {
+					"tableName": "`employees`"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_MySqlAWS')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/AmazonS3')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -707,6 +742,25 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/LS_MySqlAWS')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "MySql",
+				"typeProperties": {
+					"connectionString": "[parameters('LS_MySqlAWS_connectionString')]"
+				},
+				"connectVia": {
+					"referenceName": "integrationRuntimeAWS",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/integrationRuntimeAWS')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/trigger_copia_dados_aws_para_azure')]",
 			"type": "Microsoft.DataFactory/factories/triggers",
 			"apiVersion": "2018-06-01",
@@ -729,24 +783,14 @@
 						"interval": 1,
 						"startTime": "2022-05-05T19:05:00",
 						"endTime": "2022-05-06T21:59:00",
-						"timeZone": "E. South America Standard Time"
+						"timeZone": "E. South America Standard Time",
+						"schedule": {}
 					}
 				}
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/pipelines/Pipeline_Copiar_Dados_S3')]"
 			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/integrationRuntime1AWS')]",
-			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "SelfHosted",
-				"description": "Runtime onpremisses",
-				"typeProperties": {}
-			},
-			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/integrationRuntimeAWS')]",
@@ -759,45 +803,320 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/LS_MySqlAWS')]",
+			"name": "[concat(parameters('factoryName'), '/HttpServerBrasilIO')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"annotations": [],
-				"type": "MySql",
+				"type": "HttpServer",
 				"typeProperties": {
-					"connectionString": "[parameters('LS_MySqlAWS_connectionString')]"
-				},
-				"connectVia": {
-					"referenceName": "integrationRuntimeAWS",
-					"type": "IntegrationRuntimeReference"
+					"url": "[parameters('HttpServerBrasilIO_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Anonymous"
 				}
 			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/PLN-Copiar-CSV-WEB-GERAR-TABELA')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "CopyCSVWEB",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "BinarySource",
+								"storeSettings": {
+									"type": "HttpReadSettings",
+									"requestMethod": "GET"
+								},
+								"formatSettings": {
+									"type": "BinaryReadSettings"
+								}
+							},
+							"sink": {
+								"type": "BinarySink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"dataIntegrationUnits": 2
+						},
+						"inputs": [
+							{
+								"referenceName": "CopyCSVBrasilIO",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "CovidCSVBrasilIO",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "Cria",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "CopyCSVWEB",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"writeBehavior": "insert",
+								"sqlWriterUseTableLock": false,
+								"tableOption": "autoCreate",
+								"disableMetricsCollection": false
+							},
+							"enableStaging": false,
+							"dataIntegrationUnits": 2,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "CSVUnzipCovidBrasilIO",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "TableCovidBrasilIO",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"folder": {
+					"name": "Demo/003-Copiar CSV da WEB - Gravar no Data Lake - Gerar tabela no SQL Server"
+				},
+				"annotations": []
+			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/integrationRuntimes/integrationRuntimeAWS')]"
+				"[concat(variables('factoryId'), '/datasets/CopyCSVBrasilIO')]",
+				"[concat(variables('factoryId'), '/datasets/CovidCSVBrasilIO')]",
+				"[concat(variables('factoryId'), '/datasets/CSVUnzipCovidBrasilIO')]",
+				"[concat(variables('factoryId'), '/datasets/TableCovidBrasilIO')]"
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/MySqlAWS')]",
+			"name": "[concat(parameters('factoryName'), '/CopyCSVBrasilIO')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "LS_MySqlAWS",
+					"referenceName": "HttpServerBrasilIO",
 					"type": "LinkedServiceReference"
 				},
-				"folder": {
-					"name": "Demo/003-Mysql-AWS"
-				},
 				"annotations": [],
-				"type": "MySqlTable",
-				"schema": [],
+				"type": "Binary",
 				"typeProperties": {
-					"tableName": "`employees`"
+					"location": {
+						"type": "HttpServerLocation",
+						"relativeUrl": "dataset/covid19/caso.csv.gz"
+					},
+					"compression": {
+						"type": "gzip",
+						"level": "Optimal"
+					}
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/LS_MySqlAWS')]"
+				"[concat(variables('factoryId'), '/linkedServices/HttpServerBrasilIO')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/LKS_AzureDataLakeStorage')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('LKS_AzureDataLakeStorage_properties_typeProperties_url')]",
+					"accountKey": {
+						"type": "SecureString",
+						"value": "[parameters('LKS_AzureDataLakeStorage_accountKey')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CovidCSVBrasilIO')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LKS_AzureDataLakeStorage",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileSystem": "input"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LKS_AzureDataLakeStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CSVUnzipCovidBrasilIO')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LKS_AzureDataLakeStorage",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "caso.csv",
+						"folderPath": "dataset/covid19",
+						"fileSystem": "input"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "date",
+						"type": "String"
+					},
+					{
+						"name": "state",
+						"type": "String"
+					},
+					{
+						"name": "city",
+						"type": "String"
+					},
+					{
+						"name": "place_type",
+						"type": "String"
+					},
+					{
+						"name": "confirmed",
+						"type": "String"
+					},
+					{
+						"name": "deaths",
+						"type": "String"
+					},
+					{
+						"name": "order_for_place",
+						"type": "String"
+					},
+					{
+						"name": "is_last",
+						"type": "String"
+					},
+					{
+						"name": "estimated_population_2019",
+						"type": "String"
+					},
+					{
+						"name": "estimated_population",
+						"type": "String"
+					},
+					{
+						"name": "city_ibge_code",
+						"type": "String"
+					},
+					{
+						"name": "confirmed_per_100k_inhabitants",
+						"type": "String"
+					},
+					{
+						"name": "death_rate",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LKS_AzureDataLakeStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/TableCovidBrasilIO')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LKS_Azure_SQL_SERVER",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "covid"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LKS_Azure_SQL_SERVER')]"
 			]
 		}
 	]
