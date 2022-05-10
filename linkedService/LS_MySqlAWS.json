@@ -1,0 +1,16 @@
+{
+	"name": "LS_MySqlAWS",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "MySql",
+		"typeProperties": {
+			"connectionString": "server=34.234.64.235;port=3306;database=employees;user=root;sslmode=1;usesystemtruststore=0",
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiIyY2FlYjRkOC0xNDYzLTQ0ZWItYWM4NS1hMGE2NWQxOTUyYTYiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+		},
+		"connectVia": {
+			"referenceName": "integrationRuntimeAWS",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}
