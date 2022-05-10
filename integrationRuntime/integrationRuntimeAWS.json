@@ -1,0 +1,6 @@
+{
+	"name": "integrationRuntimeAWS",
+	"properties": {
+		"type": "SelfHosted"
+	}
+}
