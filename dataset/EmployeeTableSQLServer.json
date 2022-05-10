@@ -1,0 +1,16 @@
+{
+	"name": "EmployeeTableSQLServer",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LKS_Azure_SQL_SERVER",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "employees"
+		}
+	}
+}
