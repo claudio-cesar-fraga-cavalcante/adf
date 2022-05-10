@@ -19,12 +19,14 @@
 						"type": "MySqlSource"
 					},
 					"sink": {
-						"type": "OrcSink",
+						"type": "DelimitedTextSink",
 						"storeSettings": {
 							"type": "AzureBlobFSWriteSettings"
 						},
 						"formatSettings": {
-							"type": "OrcWriteSettings"
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
 						}
 					},
 					"enableStaging": false,
@@ -114,7 +116,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "DTS_ORC_EMPLOYEES",
+						"referenceName": "DTS_EMPLOYEES_MYSQL",
 						"type": "DatasetReference"
 					}
 				]
