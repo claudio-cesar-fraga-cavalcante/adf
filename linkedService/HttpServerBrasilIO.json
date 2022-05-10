@@ -4,7 +4,7 @@
 		"annotations": [],
 		"type": "HttpServer",
 		"typeProperties": {
-			"url": "https://data.brasil.io/dataset/covid19/caso.csv.gz",
+			"url": "https://data.brasil.io/",
 			"enableServerCertificateValidation": true,
 			"authenticationType": "Anonymous"
 		}
