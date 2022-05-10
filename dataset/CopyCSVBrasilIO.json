@@ -1,0 +1,21 @@
+{
+	"name": "CopyCSVBrasilIO",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "HttpServerBrasilIO",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "HttpServerLocation",
+				"relativeUrl": "dataset/covid19/caso.csv.gz"
+			},
+			"compression": {
+				"type": "gzip",
+				"level": "Optimal"
+			}
+		}
+	}
+}

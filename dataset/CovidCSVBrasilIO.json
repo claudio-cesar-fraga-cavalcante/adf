@@ -1,0 +1,17 @@
+{
+	"name": "CovidCSVBrasilIO",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LKS_AzureDataLakeStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileSystem": "input"
+			}
+		}
+	}
+}
