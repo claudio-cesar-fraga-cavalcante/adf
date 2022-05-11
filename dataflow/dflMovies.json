@@ -5,14 +5,50 @@
 		"typeProperties": {
 			"sources": [
 				{
-					"name": "source1"
+					"dataset": {
+						"referenceName": "DST_Movies",
+						"type": "DatasetReference"
+					},
+					"name": "MoviesDL"
 				}
 			],
 			"sinks": [],
-			"transformations": [],
+			"transformations": [
+				{
+					"name": "selectCorrecaoNome"
+				},
+				{
+					"name": "filmesMaioresdoAno1950"
+				},
+				{
+					"name": "DerivadaGenero"
+				}
+			],
 			"scriptLines": [
-				"source(allowSchemaDrift: true,",
-				"     validateSchema: false) ~> source1"
+				"source(output(",
+				"          movie as string,",
+				"          title as string,",
+				"          genres as string,",
+				"          year as string,",
+				"          Rating as string,",
+				"          {Rotton Tomato} as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     limit: 100,",
+				"     ignoreNoFilesFound: false) ~> MoviesDL",
+				"MoviesDL select(mapColumn(",
+				"          movie,",
+				"          title,",
+				"          genres,",
+				"          year,",
+				"          Rating,",
+				"          {Rottan Tomato} = {Rotton Tomato}",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> selectCorrecaoNome",
+				"selectCorrecaoNome filter(toInteger(year) > 1950) ~> filmesMaioresdoAno1950",
+				"filmesMaioresdoAno1950 derive(primeiroGenero = iif(locate(\"|\", genres) > 1, left(genres, locate(\"|\", genres) -1 ), genres)) ~> DerivadaGenero"
 			]
 		}
 	}
