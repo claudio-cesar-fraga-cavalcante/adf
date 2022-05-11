@@ -12,7 +12,15 @@
 					"name": "MoviesDL"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_MoviesProcessado",
+						"type": "DatasetReference"
+					},
+					"name": "MoviesDLDestination"
+				}
+			],
 			"transformations": [
 				{
 					"name": "selectCorrecaoNome"
@@ -22,6 +30,12 @@
 				},
 				{
 					"name": "DerivadaGenero"
+				},
+				{
+					"name": "RankFilmesPorRatings"
+				},
+				{
+					"name": "aggregageRatings"
 				}
 			],
 			"scriptLines": [
@@ -48,7 +62,24 @@
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> selectCorrecaoNome",
 				"selectCorrecaoNome filter(toInteger(year) > 1950) ~> filmesMaioresdoAno1950",
-				"filmesMaioresdoAno1950 derive(primeiroGenero = iif(locate(\"|\", genres) > 1, left(genres, locate(\"|\", genres) -1 ), genres)) ~> DerivadaGenero"
+				"filmesMaioresdoAno1950 derive(primeiroGenero = iif(locate(\"|\", genres) > 1, left(genres, locate(\"|\", genres) -1 ), genres)) ~> DerivadaGenero",
+				"DerivadaGenero window(over(primeiroGenero,",
+				"          year),",
+				"     asc({Rottan Tomato}, true),",
+				"     RatingsRank = rank()) ~> RankFilmesPorRatings",
+				"RankFilmesPorRatings aggregate(groupBy(primeiroGenero,",
+				"          year),",
+				"     MediaRatings = avg(toInteger({Rottan Tomato})),",
+				"          MaiorRating = first(title),",
+				"          {Ultimo Filme} = last(title),",
+				"          {Quantidade de Filmes} = count()) ~> aggregageRatings",
+				"aggregageRatings sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> MoviesDLDestination"
 			]
 		}
 	}
