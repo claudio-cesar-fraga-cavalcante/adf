@@ -49,7 +49,6 @@
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     limit: 100,",
 				"     ignoreNoFilesFound: false) ~> MoviesDL",
 				"MoviesDL select(mapColumn(",
 				"          movie,",
