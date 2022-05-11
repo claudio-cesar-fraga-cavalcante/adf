@@ -1,0 +1,36 @@
+{
+	"name": "Processar - CSV Employees salvar no SQL Server Azure",
+	"properties": {
+		"activities": [
+			{
+				"name": "DFW-  Processar CSV Employees",
+				"description": "Processar CSV- salvar no SQL Server Azure",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "1.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "dflMovies",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"folder": {
+			"name": "Demo/006-Processar dados com dataflow - salvar no SQL Server Azure"
+		},
+		"annotations": []
+	}
+}
