@@ -75,11 +75,13 @@
 				"          {Quantidade de Filmes} = count()) ~> aggregageRatings",
 				"aggregageRatings sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
+				"     partitionFileNames:['MoviesDL_processado.csv'],",
 				"     umask: 0022,",
 				"     preCommands: [],",
 				"     postCommands: [],",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> MoviesDLDestination"
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> MoviesDLDestination"
 			]
 		}
 	}
