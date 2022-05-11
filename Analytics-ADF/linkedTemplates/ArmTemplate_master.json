@@ -89,9 +89,6 @@
 					"LKS_Azure_SQL_SERVER_connectionString": {
 						"value": "[parameters('LKS_Azure_SQL_SERVER_connectionString')]"
 					},
-					"LS_MySqlAWS_connectionString": {
-						"value": "[parameters('LS_MySqlAWS_connectionString')]"
-					},
 					"AmazonS3_properties_typeProperties_accessKeyId": {
 						"value": "[parameters('AmazonS3_properties_typeProperties_accessKeyId')]"
 					},
@@ -121,6 +118,9 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
+					},
+					"LS_MySqlAWS_connectionString": {
+						"value": "[parameters('LS_MySqlAWS_connectionString')]"
 					}
 				}
 			},

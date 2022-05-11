@@ -27,10 +27,6 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'LKS_Azure_SQL_SERVER'"
 		},
-		"LS_MySqlAWS_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'LS_MySqlAWS'"
-		},
 		"AmazonS3_properties_typeProperties_accessKeyId": {
 			"type": "string",
 			"defaultValue": "AKIAQGAW7RYO5WPBMHHO"
@@ -622,6 +618,27 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/EmployeeTableSQLServer')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LKS_Azure_SQL_SERVER",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "employees"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LKS_Azure_SQL_SERVER')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/TableCovidBrasilIO')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -640,25 +657,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/LKS_Azure_SQL_SERVER')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/LS_MySqlAWS')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "MySql",
-				"typeProperties": {
-					"connectionString": "[parameters('LS_MySqlAWS_connectionString')]"
-				},
-				"connectVia": {
-					"referenceName": "integrationRuntimeAWS",
-					"type": "IntegrationRuntimeReference"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/integrationRuntimes/integrationRuntimeAWS')]"
 			]
 		}
 	]

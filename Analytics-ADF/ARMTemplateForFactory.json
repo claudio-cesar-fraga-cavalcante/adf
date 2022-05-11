@@ -53,6 +53,144 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/Copiar tabela Mysql AWS para SQL Server Azure')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copiar tabela Mysql AWS para SQL Server Azure",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "MySqlSource"
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"writeBehavior": "insert",
+								"sqlWriterUseTableLock": false,
+								"tableOption": "autoCreate",
+								"disableMetricsCollection": false
+							},
+							"enableStaging": false,
+							"dataIntegrationUnits": 2,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "emp_no",
+											"type": "Int32"
+										},
+										"sink": {
+											"name": "emp_no",
+											"type": "Int32",
+											"physicalType": "Int32"
+										}
+									},
+									{
+										"source": {
+											"name": "birth_date",
+											"type": "DateTime"
+										},
+										"sink": {
+											"name": "birth_date",
+											"type": "DateTime",
+											"physicalType": "DateTime"
+										}
+									},
+									{
+										"source": {
+											"name": "first_name",
+											"type": "String"
+										},
+										"sink": {
+											"name": "first_name",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "last_name",
+											"type": "String"
+										},
+										"sink": {
+											"name": "last_name",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "gender",
+											"type": "String"
+										},
+										"sink": {
+											"name": "gender",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "hire_date",
+											"type": "DateTime"
+										},
+										"sink": {
+											"name": "hire_date",
+											"type": "DateTime",
+											"physicalType": "DateTime"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "MySqlAWS",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "EmployeeTableSQLServer",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"folder": {
+					"name": "Demo/005-Copiar tabela Mysql AWS para SQL Server Azure"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/MySqlAWS')]",
+				"[concat(variables('factoryId'), '/datasets/EmployeeTableSQLServer')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/PIP_Obter_CSV_gerar_tabela')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -1167,6 +1305,27 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/EmployeeTableSQLServer')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LKS_Azure_SQL_SERVER",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "employees"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LKS_Azure_SQL_SERVER')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/MySqlAWS')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -1366,17 +1525,18 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/Copiar tabela Mysql AWS para SQL Server Azure')]",
+			"name": "[concat(parameters('factoryName'), '/Processar - CSV Employees salvar no SQL Server Azure')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"activities": [
 					{
-						"name": "Copiar tabela Mysql AWS para SQL Server Azure",
-						"type": "Copy",
+						"name": "DFW-  Processar CSV Employees",
+						"description": "Processar CSV- salvar no SQL Server Azure",
+						"type": "ExecuteDataFlow",
 						"dependsOn": [],
 						"policy": {
-							"timeout": "7.00:00:00",
+							"timeout": "1.00:00:00",
 							"retry": 0,
 							"retryIntervalInSeconds": 30,
 							"secureOutput": false,
@@ -1384,109 +1544,22 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"source": {
-								"type": "MySqlSource"
-							},
-							"sink": {
-								"type": "AzureSqlSink",
-								"writeBehavior": "insert",
-								"sqlWriterUseTableLock": false,
-								"tableOption": "autoCreate",
-								"disableMetricsCollection": false
-							},
-							"enableStaging": false,
-							"dataIntegrationUnits": 2,
-							"translator": {
-								"type": "TabularTranslator",
-								"mappings": [
-									{
-										"source": {
-											"name": "emp_no",
-											"type": "Int32"
-										},
-										"sink": {
-											"name": "emp_no",
-											"type": "Int32",
-											"physicalType": "Int32"
-										}
-									},
-									{
-										"source": {
-											"name": "birth_date",
-											"type": "DateTime"
-										},
-										"sink": {
-											"name": "birth_date",
-											"type": "DateTime",
-											"physicalType": "DateTime"
-										}
-									},
-									{
-										"source": {
-											"name": "first_name",
-											"type": "String"
-										},
-										"sink": {
-											"name": "first_name",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "last_name",
-											"type": "String"
-										},
-										"sink": {
-											"name": "last_name",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "gender",
-											"type": "String"
-										},
-										"sink": {
-											"name": "gender",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "hire_date",
-											"type": "DateTime"
-										},
-										"sink": {
-											"name": "hire_date",
-											"type": "DateTime",
-											"physicalType": "DateTime"
-										}
-									}
-								],
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
+							"dataflow": {
+								"referenceName": "dflMovies",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"MoviesDL": {},
+									"MoviesDLDestination": {}
 								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "MySqlAWS",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "EmployeeTableSQLServer",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
 					}
 				],
 				"policy": {
@@ -1494,34 +1567,185 @@
 					"cancelAfter": {}
 				},
 				"folder": {
-					"name": "Demo/005-Copiar tabela Mysql AWS para SQL Server Azure"
+					"name": "Demo/006-Processar dados com dataflow - salvar no SQL Server Azure"
 				},
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/MySqlAWS')]",
-				"[concat(variables('factoryId'), '/datasets/EmployeeTableSQLServer')]"
+				"[concat(variables('factoryId'), '/dataflows/dflMovies')]"
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/EmployeeTableSQLServer')]",
+			"name": "[concat(parameters('factoryName'), '/dflMovies')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "DST_Movies",
+								"type": "DatasetReference"
+							},
+							"name": "MoviesDL"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "DS_MoviesProcessado",
+								"type": "DatasetReference"
+							},
+							"name": "MoviesDLDestination"
+						}
+					],
+					"transformations": [
+						{
+							"name": "selectCorrecaoNome"
+						},
+						{
+							"name": "filmesMaioresdoAno1950"
+						},
+						{
+							"name": "DerivadaGenero"
+						},
+						{
+							"name": "RankFilmesPorRatings"
+						},
+						{
+							"name": "aggregageRatings"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          movie as string,",
+						"          title as string,",
+						"          genres as string,",
+						"          year as string,",
+						"          Rating as string,",
+						"          {Rotton Tomato} as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> MoviesDL",
+						"MoviesDL select(mapColumn(",
+						"          movie,",
+						"          title,",
+						"          genres,",
+						"          year,",
+						"          Rating,",
+						"          {Rottan Tomato} = {Rotton Tomato}",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> selectCorrecaoNome",
+						"selectCorrecaoNome filter(toInteger(year) > 1950) ~> filmesMaioresdoAno1950",
+						"filmesMaioresdoAno1950 derive(primeiroGenero = iif(locate(\"|\", genres) > 1, left(genres, locate(\"|\", genres) -1 ), genres)) ~> DerivadaGenero",
+						"DerivadaGenero window(over(primeiroGenero,",
+						"          year),",
+						"     asc({Rottan Tomato}, true),",
+						"     RatingsRank = rank()) ~> RankFilmesPorRatings",
+						"RankFilmesPorRatings aggregate(groupBy(primeiroGenero,",
+						"          year),",
+						"     MediaRatings = avg(toInteger({Rottan Tomato})),",
+						"          MaiorRating = first(title),",
+						"          {Ultimo Filme} = last(title),",
+						"          {Quantidade de Filmes} = count()) ~> aggregageRatings",
+						"aggregageRatings sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     partitionFileNames:['MoviesDL_processado.csv'],",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     partitionBy('hash', 1)) ~> MoviesDLDestination"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/DST_Movies')]",
+				"[concat(variables('factoryId'), '/datasets/DS_MoviesProcessado')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DST_Movies')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "LKS_Azure_SQL_SERVER",
+					"referenceName": "LKS_AzureDataLakeStorage",
 					"type": "LinkedServiceReference"
 				},
 				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [],
+				"type": "DelimitedText",
 				"typeProperties": {
-					"schema": "dbo",
-					"table": "employees"
-				}
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "moviesDB.csv",
+						"fileSystem": "input"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "movie",
+						"type": "String"
+					},
+					{
+						"name": "title",
+						"type": "String"
+					},
+					{
+						"name": "genres",
+						"type": "String"
+					},
+					{
+						"name": "year",
+						"type": "String"
+					},
+					{
+						"name": "Rating",
+						"type": "String"
+					},
+					{
+						"name": "Rotton Tomato",
+						"type": "String"
+					}
+				]
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/LKS_Azure_SQL_SERVER')]"
+				"[concat(variables('factoryId'), '/linkedServices/LKS_AzureDataLakeStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_MoviesProcessado')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LKS_AzureDataLakeStorage",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileSystem": "processado"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LKS_AzureDataLakeStorage')]"
 			]
 		}
 	]
